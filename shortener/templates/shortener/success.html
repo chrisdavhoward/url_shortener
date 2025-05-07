@@ -1,0 +1,26 @@
+{% extends 'shortener/base.html' %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Your Shortened URL</h5>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" value="{{ short_url }}" id="short-url" readonly>
+            <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard()">Copy</button>
+        </div>
+        <div class="d-grid">
+            <a href="{% url 'index' %}" class="btn btn-primary">Shorten Another URL</a>
+        </div>
+    </div>
+</div>
+
+<script>
+function copyToClipboard() {
+    var copyText = document.getElementById("short-url");
+    copyText.select();
+    copyText.setSelectionRange(0, 99999); /* For mobile devices */
+    document.execCommand("copy");
+    alert("Copied the URL: " + copyText.value);
+}
+</script>
+{% endblock %}

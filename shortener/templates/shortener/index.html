@@ -1,0 +1,23 @@
+{% extends 'shortener/base.html' %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                {{ form.original_url.label_tag }}
+                {{ form.original_url }}
+                {% if form.original_url.errors %}
+                <div class="text-danger">
+                    {{ form.original_url.errors }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary">Shorten URL</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
