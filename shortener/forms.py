@@ -1,5 +1,4 @@
 from django import forms
-from .models import URL
 
 class URLForm(forms.Form):
     original_url = forms.URLField(

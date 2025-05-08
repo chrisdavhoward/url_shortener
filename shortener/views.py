@@ -1,5 +1,5 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponsePermanentRedirect
 from .models import URL
 from .forms import URLForm
 
@@ -29,6 +29,6 @@ def index(request):
     return render(request, 'shortener/index.html', {'form': form})
 
 def redirect_to_original(request, short_code):
-    """Redirect from short URL to original URL."""
+    """Redirect from short URL to original URL with a 301 status code."""
     url_obj = get_object_or_404(URL, short_code=short_code)
-    return redirect(url_obj.original_url)
+    return HttpResponsePermanentRedirect(url_obj.original_url)
