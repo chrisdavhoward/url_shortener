@@ -3,6 +3,7 @@ from django.http import HttpResponsePermanentRedirect
 from .models import URL
 from .forms import URLForm
 from django.contrib import messages
+from django.db import IntegrityError
 
 def get_client_ip(request):
     """Get the client's IP address from the request."""
@@ -39,13 +40,25 @@ def index(request):
                 if existing_url:
                     short_code = existing_url.short_code
                 else:
-                    # Create a new short URL
-                    short_code = URL.create_short_code()
-                    URL.objects.create(
-                        original_url=original_url, 
-                        short_code=short_code,
-                        ip_address=ip_address
-                    )
+                    # Try to create a new short URL (with race condition handling)
+                    max_attempts = 3  # Prevent infinite loops
+                    for _ in range(max_attempts):
+                        try:
+                            short_code = URL.create_short_code()
+                            URL.objects.create(
+                                original_url=original_url, 
+                                short_code=short_code,
+                                ip_address=ip_address
+                            )
+                            break  # Success! Exit the loop
+                        except IntegrityError:
+                            # Race condition occurred, try again with a new code
+                            continue
+                    else:
+                        # This will only execute if the loop completes without a break
+                        messages.error(request, "Error generating short URL. Please try again.")
+                        context['form'] = form
+                        return render(request, 'shortener/index.html', context)
                 
                 # Build the full short URL
                 short_url = request.build_absolute_uri(f'/{short_code}')
