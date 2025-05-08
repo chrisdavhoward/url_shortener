@@ -35,9 +35,14 @@ ALLOWED_HOSTS = [
     'localhost', 
     '127.0.0.1', 
     '.herokuapp.com', 
-    'pphm.site',        
-    'www.pphm.site'     
+    # 'pphm.site',        
+    # 'www.pphm.site'     
 ]
+
+# HTTPS redirect
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 # Application definition
