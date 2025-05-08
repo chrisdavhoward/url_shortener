@@ -15,8 +15,9 @@
         
         <form method="post" id="shortener-form">
             {% csrf_token %}
-            <div class="mb-3">
+            <div class="mb-3 position-relative">
                 {{ form.original_url }}
+                <button type="button" class="clear-input-btn" id="clear-input-btn" style="display: none;">×</button>
                 {% if form.original_url.errors %}
                 <div class="text-danger mt-2">
                     {{ form.original_url.errors }}
@@ -44,6 +45,35 @@
 </div>
 {% endif %}
 
+<style>
+    .position-relative {
+        position: relative;
+    }
+    .clear-input-btn {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        font-size: 20px;
+        line-height: 1;
+        color: #6c757d;
+        cursor: pointer;
+        padding: 0;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+    }
+    .clear-input-btn:hover {
+        background-color: #e9ecef;
+        color: #495057;
+    }
+</style>
+
 <script>
 function copyToClipboard() {
     var copyText = document.getElementById("short-url");
@@ -64,5 +94,33 @@ function copyToClipboard() {
         button.classList.add("btn-outline-secondary");
     }, 2000);
 }
+
+// Clear button functionality
+document.addEventListener('DOMContentLoaded', function() {
+    var input = document.getElementById('id_original_url');
+    var clearButton = document.getElementById('clear-input-btn');
+    
+    // Show/hide clear button based on input content
+    function toggleClearButton() {
+        if (input.value.length > 0) {
+            clearButton.style.display = 'flex';
+        } else {
+            clearButton.style.display = 'none';
+        }
+    }
+    
+    // Initial state
+    toggleClearButton();
+    
+    // Listen for input changes
+    input.addEventListener('input', toggleClearButton);
+    
+    // Clear the input when button is clicked
+    clearButton.addEventListener('click', function() {
+        input.value = '';
+        toggleClearButton();
+        input.focus();
+    });
+});
 </script>
 {% endblock %}
