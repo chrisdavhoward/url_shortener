@@ -1,15 +1,15 @@
 {% extends 'shortener/base.html' %}
 
 {% block content %}
-<div class="card">
+<div class="card mb-4">
     <div class="card-body">
-        <form method="post">
+        <h5 class="card-title">Shorten a URL</h5>
+        <form method="post" id="shortener-form">
             {% csrf_token %}
             <div class="mb-3">
-                {{ form.original_url.label_tag }}
                 {{ form.original_url }}
                 {% if form.original_url.errors %}
-                <div class="text-danger">
+                <div class="text-danger mt-2">
                     {{ form.original_url.errors }}
                 </div>
                 {% endif %}
@@ -20,4 +20,39 @@
         </form>
     </div>
 </div>
+
+<!-- Success card - initially hidden, shown when a URL is shortened -->
+{% if short_url %}
+<div class="card" id="success-card">
+    <div class="card-body">
+        <h5 class="card-title">Your Shortened URL</h5>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" value="{{ short_url }}" id="short-url" readonly>
+            <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard()">Copy</button>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<script>
+function copyToClipboard() {
+    var copyText = document.getElementById("short-url");
+    copyText.select();
+    copyText.setSelectionRange(0, 99999); /* For mobile devices */
+    document.execCommand("copy");
+    
+    // Replace alert with a more elegant notification
+    var button = document.querySelector("#short-url + button");
+    var originalText = button.textContent;
+    button.textContent = "Copied!";
+    button.classList.remove("btn-outline-secondary");
+    button.classList.add("btn-success");
+    
+    setTimeout(function() {
+        button.textContent = originalText;
+        button.classList.remove("btn-success");
+        button.classList.add("btn-outline-secondary");
+    }, 2000);
+}
+</script>
 {% endblock %}
