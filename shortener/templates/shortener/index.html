@@ -15,9 +15,11 @@
         
         <form method="post" id="shortener-form">
             {% csrf_token %}
-            <div class="mb-3 position-relative">
-                {{ form.original_url }}
-                <button type="button" class="clear-input-btn" id="clear-input-btn" style="display: none;">×</button>
+            <div class="mb-3">
+                <div class="input-wrapper position-relative">
+                    {{ form.original_url }}
+                    <button type="button" class="clear-input-btn" id="clear-input-btn" style="display: none;">×</button>
+                </div>
                 {% if form.original_url.errors %}
                 <div class="text-danger mt-2">
                     {{ form.original_url.errors }}
@@ -46,9 +48,15 @@
 {% endif %}
 
 <style>
+    .input-wrapper {
+        display: flex;
+        align-items: center;
+    }
+    
     .position-relative {
         position: relative;
     }
+    
     .clear-input-btn {
         position: absolute;
         right: 12px;
@@ -67,7 +75,9 @@
         align-items: center;
         justify-content: center;
         border-radius: 50%;
+        z-index: 5;
     }
+    
     .clear-input-btn:hover {
         background-color: #e9ecef;
         color: #495057;
@@ -81,7 +91,6 @@ function copyToClipboard() {
     copyText.setSelectionRange(0, 99999); /* For mobile devices */
     document.execCommand("copy");
     
-    // Replace alert with a more elegant notification
     var button = document.querySelector("#short-url + button");
     var originalText = button.textContent;
     button.textContent = "Copied!";
