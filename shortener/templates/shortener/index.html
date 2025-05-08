@@ -17,7 +17,9 @@
             {% csrf_token %}
             <div class="mb-3">
                 <div class="input-wrapper position-relative">
-                    {{ form.original_url }}
+                    <div class="flex-grow-1">
+                        {{ form.original_url }}
+                    </div>
                     <button type="button" class="clear-input-btn" id="clear-input-btn" style="display: none;">×</button>
                 </div>
                 {% if form.original_url.errors %}
@@ -51,10 +53,13 @@
     .input-wrapper {
         display: flex;
         align-items: center;
+        position: relative;
     }
     
-    .position-relative {
-        position: relative;
+    /* Modify the input styling to make room for the clear button */
+    #id_original_url {
+        padding-right: 40px; /* Add right padding to input to prevent text from going under the button */
+        width: 100%;
     }
     
     .clear-input-btn {
@@ -62,11 +67,11 @@
         right: 12px;
         top: 50%;
         transform: translateY(-50%);
-        background: none;
+        background-color: #e9ecef;
         border: none;
         font-size: 20px;
         line-height: 1;
-        color: #6c757d;
+        color: #495057;
         cursor: pointer;
         padding: 0;
         width: 24px;
@@ -79,8 +84,13 @@
     }
     
     .clear-input-btn:hover {
-        background-color: #e9ecef;
-        color: #495057;
+        background-color: #ced4da;
+    }
+    
+    /* Make sure the wrapper takes full width */
+    .flex-grow-1 {
+        flex-grow: 1;
+        width: 100%;
     }
 </style>
 
@@ -91,6 +101,7 @@ function copyToClipboard() {
     copyText.setSelectionRange(0, 99999); /* For mobile devices */
     document.execCommand("copy");
     
+    // Replace alert with a more elegant notification
     var button = document.querySelector("#short-url + button");
     var originalText = button.textContent;
     button.textContent = "Copied!";
